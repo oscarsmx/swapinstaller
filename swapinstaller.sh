@@ -1,20 +1,35 @@
 #!/bin/bash
-# SWAP MAKER 1.0
-# Tested on CentOS 7.x and Ubuntu 17.04
+# SWAP INSTALLER 2.0
+# Tested on CentOS 7.x and Ubuntu 18.04
 # Author OscarS.
 # http://www.oscars.mx
 
-{
-if [[ $(swapon -s) ]]; then
-	echo "ERROR. THERE IS SOME SWAP IN THE SYSTEM"
+checkswap() {
+if $(free | awk '/^Swap:/ {exit !$2}'); then
+    echo "there is already some Swap."
+    echo "$(free | awk '/^Swap:/')"
+    exit
 else
-	echo "#########################"
-	echo "Installing a 4GB SWAP file to the system"
-	dd if=/dev/zero of=/swapfile bs=1M count=4048
-	mkswap /swapfile
-	swapon /swapfile
-	chmod 600 /swapfile
-	echo "/swapfile swap swap    0   0" >> /etc/fstab
-	echo "SWAP Installed. Log at /var/log/swapinstaller.log"
+    echo "there is no Swap."
+    echo "$(free | awk '/^Swap:/')"
+    echo "Starting script..."
 fi
-} 2>&1 | tee /var/log/swapinstaller.log
+}
+
+install() {
+checkswap
+    echo "How many GBs do you need at your SWAP (i.e. 4GB = 4 plesae do not type GB or gb)"
+    echo "Remember that this will be taken from your HD so if you have 25GB and need 5GB swap you will have only 20GB after this script"
+    read swapsize
+    echo "creating file"
+    dd if=/dev/zero of=/swapfile bs=1M count=$swapsize
+    echo "installing swap"
+    mkswap /swapfile
+    swapon /swapfile
+    chmod 600 /swapfile
+    echo "/swapfile swap swap    0   0" >> /etc/fstab
+    echo "SWAP installed at /swapfile with $swapsize GB of size"
+    echo "Bye bye"
+    exit
+}
+install
