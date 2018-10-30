@@ -18,7 +18,7 @@ fi
 
 install() {
 checkswap
-    echo "How many GBs do you need at your SWAP (i.e. 4GB = 4 plesae do not type GB or gb)"
+    echo "Insert MBs to allocate swap (i.e. 4096 = 4GB only numbers please)"
     echo "Remember that this will be taken from your HD so if you have 25GB and need 5GB swap you will have only 20GB after this script"
     read swapsize
     echo "creating file"
@@ -28,7 +28,7 @@ checkswap
     swapon /swapfile
     chmod 600 /swapfile
     echo "/swapfile swap swap    0   0" >> /etc/fstab
-    echo "SWAP installed at /swapfile with $swapsize GB of size"
+    echo "SWAP installed at /swapfile with $swapsize MBs of size"
     echo "Bye bye"
     exit
 }
