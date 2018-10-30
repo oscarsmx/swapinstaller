@@ -6,7 +6,7 @@
 
 checkswap() {
 if $(free | awk '/^Swap:/ {exit !$2}'); then
-    echo "there is already some Swap."
+    echo "there is already some Swap. Exitting..."
     echo "$(free | awk '/^Swap:/')"
     exit
 else
